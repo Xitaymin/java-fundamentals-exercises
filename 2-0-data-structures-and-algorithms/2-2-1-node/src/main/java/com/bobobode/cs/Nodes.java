@@ -22,7 +22,7 @@ public class Nodes {
      * @return a new instance of {@link Node}
      */
     public static <T> Node<T> create(T element) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return new Node<>(element);
     }
 
     /**
@@ -33,7 +33,8 @@ public class Nodes {
      * @param <T>    a genetic type
      */
     public static <T> void link(Node<T> first, Node<T> second) {
-        throw new ExerciseNotCompletedException(); // todo:
+        first.next = second;
+
     }
 
     /**
@@ -46,7 +47,10 @@ public class Nodes {
      * @return a reference to a first node created based on firstElement
      */
     public static <T> Node<T> pairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> secondNode = create(secondElement);
+        Node<T> firstNode = create(firstElement);
+        firstNode.next = secondNode;
+        return firstNode;
     }
 
     /**
@@ -60,7 +64,9 @@ public class Nodes {
      * @return a reference to the first node
      */
     public static <T> Node<T> closedPairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> firstNode = pairOf(firstElement, secondElement);
+        firstNode.next.next = firstNode;
+        return firstNode;
     }
 
     /**
