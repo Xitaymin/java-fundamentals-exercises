@@ -18,13 +18,36 @@ import java.util.function.Consumer;
  */
 public class RecursiveBinarySearchTree<T extends Comparable<T>> implements BinarySearchTree<T> {
 
+    private Node<T> root;
+    private int size;
+
     public static <T extends Comparable<T>> RecursiveBinarySearchTree<T> of(T... elements) {
         throw new ExerciseNotCompletedException();
     }
 
     @Override
     public boolean insert(T element) {
-        throw new ExerciseNotCompletedException();
+        if (root == null) {
+            root = Node.of(element);
+            size++;
+            return true;
+        }
+        return insert(root, element);
+    }
+
+    private boolean insert(Node<T> node, T element) {
+
+        int comparisonResult = node.element.compareTo(element);
+        if (comparisonResult > 0) {
+            if (node.left == null) node.left = Node.of(element);
+            else return insert(node.left, element);
+        } else if (comparisonResult < 0) {
+            if (node.right == null) node.right = Node.of(element);
+            else return insert(node.right, element);
+        } else return false;
+
+        size++;
+        return true;
     }
 
     @Override
@@ -34,7 +57,7 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
 
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException();
+        return size;
     }
 
     @Override
@@ -46,4 +69,19 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
     public void inOrderTraversal(Consumer<T> consumer) {
         throw new ExerciseNotCompletedException();
     }
+
+    static class Node<T> {
+        T element;
+        Node<T> left;
+        Node<T> right;
+
+        public Node(T element) {
+            this.element = element;
+        }
+
+        static <T> Node<T> of(T element) {
+            return new Node<>(element);
+        }
+    }
+
 }

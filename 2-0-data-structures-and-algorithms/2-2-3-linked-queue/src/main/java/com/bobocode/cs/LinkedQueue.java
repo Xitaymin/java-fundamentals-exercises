@@ -16,13 +16,42 @@ import com.bobocode.util.ExerciseNotCompletedException;
  */
 public class LinkedQueue<T> implements Queue<T> {
 
+    static class Node<T> {
+        T value;
+        Node<T> next;
+
+        public Node(T value) {
+            this.value = value;
+        }
+
+        public Node(T value, Node<T> next) {
+            this.value = value;
+            this.next = next;
+        }
+
+        public static <T> Node<T> of(T value) {
+            return new Node<>(value);
+        }
+    }
+
+    private int size;
+    private Node<T> head;
+    private Node<T> tail;
+
     /**
      * Adds an element to the end of the queue.
      *
      * @param element the element to add
      */
     public void add(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Node<T> node = Node.of(element);
+        if (head == null) {
+            head = node;
+            tail = node;
+        }
+        tail.next = node;
+        tail = node;
+        size++;
     }
 
     /**
@@ -31,7 +60,16 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an element that was retrieved from the head or null if queue is empty
      */
     public T poll() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (head == null) {
+            return null;
+        }
+        T value = head.value;
+        if (size == 1) {
+            tail = null;
+        }
+        head = head.next;
+        size--;
+        return value;
     }
 
     /**
@@ -40,7 +78,7 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an integer value that is a size of queue
      */
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size;
     }
 
     /**
@@ -49,6 +87,7 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return {@code true} if the queue is empty, returns {@code false} if it's not
      */
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        return size == 0;
     }
 }
