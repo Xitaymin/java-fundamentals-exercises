@@ -1,8 +1,10 @@
 package com.bobocode.cs;
 
-import com.bobocode.util.ExerciseNotCompletedException;
-
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import static java.lang.Math.max;
 
 /**
  * {@link RecursiveBinarySearchTree} is an implementation of a {@link BinarySearchTree} that is based on a linked nodes
@@ -21,8 +23,11 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
     private Node<T> root;
     private int size;
 
+    @SafeVarargs
     public static <T extends Comparable<T>> RecursiveBinarySearchTree<T> of(T... elements) {
-        throw new ExerciseNotCompletedException();
+        RecursiveBinarySearchTree<T> tree = new RecursiveBinarySearchTree<>();
+        Stream.of(elements).forEach(tree::insert);
+        return tree;
     }
 
     @Override
@@ -52,7 +57,20 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
 
     @Override
     public boolean contains(T element) {
-        throw new ExerciseNotCompletedException();
+        Objects.requireNonNull(element);
+        return contains(element, root);
+
+
+    }
+
+    private boolean contains(T element, Node<T> node) {
+        if (node == null) {
+            return false;
+        }
+        int comparisonResult = node.element.compareTo(element);
+        if (comparisonResult == 0) return true;
+        if (comparisonResult > 0) return contains(element, node.left);
+        else return contains(element, node.right);
     }
 
     @Override
@@ -62,12 +80,25 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
 
     @Override
     public int depth() {
-        throw new ExerciseNotCompletedException();
+        if (root == null || (root.right == null && root.left == null)) return 0;
+        return depth(root) - 1;
+    }
+
+    private int depth(Node<T> node) {
+        if (node == null) return 0;
+        return max(depth(node.left), depth(node.right)) + 1;
     }
 
     @Override
     public void inOrderTraversal(Consumer<T> consumer) {
-        throw new ExerciseNotCompletedException();
+        inOrderTraversal(consumer, root);
+    }
+
+    private void inOrderTraversal(Consumer<T> consumer, Node<T> node) {
+        if (node == null) return;
+        inOrderTraversal(consumer, node.left);
+        consumer.accept(node.element);
+        inOrderTraversal(consumer, node.right);
     }
 
     static class Node<T> {
