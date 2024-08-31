@@ -2,6 +2,8 @@ package com.bobocode.cs;
 
 import com.bobocode.util.ExerciseNotCompletedException;
 
+import java.util.NoSuchElementException;
+
 /**
  * {@link ArrayList} is an implementation of {@link List} interface. This resizable data structure
  * based on an array and is simplified version of {@link java.util.ArrayList}.
@@ -13,14 +15,26 @@ import com.bobocode.util.ExerciseNotCompletedException;
  */
 public class ArrayList<T> implements List<T> {
 
+    private static final int DEFAULT_CAPACITY = 5;
     /**
      * This constructor creates an instance of {@link ArrayList} with a specific capacity of an array inside.
      *
      * @param initCapacity - the initial capacity of the list
      * @throws IllegalArgumentException – if the specified initial capacity is negative or 0.
      */
+
+    private int capacity;
+
+    private int size;
+
+    private T[] table;
+
     public ArrayList(int initCapacity) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (initCapacity <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.capacity = initCapacity;
+        this.table = (T[]) new Object[initCapacity];
     }
 
     /**
@@ -28,7 +42,10 @@ public class ArrayList<T> implements List<T> {
      * A default size of inner array is 5;
      */
     public ArrayList() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        this.capacity = DEFAULT_CAPACITY;
+        this.table = (T[]) new Object[DEFAULT_CAPACITY];
+
     }
 
     /**
@@ -48,7 +65,22 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void add(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        ResizeIfNecessary();
+        table[size] = element;
+        size++;
+    }
+
+    private void ResizeIfNecessary() {
+        if (size > capacity / 2) {
+            ExtendArray();
+        }
+    }
+
+    private void ExtendArray() {
+        capacity = capacity + (capacity >> 1);
+        T[] newTable = (T[]) new Object[]{capacity};
+        System.arraycopy(table, 0, newTable, 0, size);
+        table = newTable;
     }
 
     /**
@@ -71,6 +103,7 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T get(int index) {
+
         throw new ExerciseNotCompletedException(); // todo: implement this method
     }
 
@@ -82,7 +115,12 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T getFirst() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+
+        return table[0];
     }
 
     /**
@@ -93,7 +131,10 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T getLast() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        return table[size - 1];
     }
 
     /**
@@ -105,7 +146,12 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void set(int index, T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        if (index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        table[index] = element;
     }
 
     /**
@@ -138,7 +184,7 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size == 0;
     }
 
     /**
@@ -146,7 +192,7 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size;
     }
 
     /**
@@ -154,6 +200,8 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void clear() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        table = (T[]) new Object[capacity];
+        size = 0;
     }
 }
