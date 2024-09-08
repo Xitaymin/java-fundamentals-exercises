@@ -3,6 +3,7 @@ package com.bobocode.cs;
 import com.bobocode.util.ExerciseNotCompletedException;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 /**
  * {@link ArrayList} is an implementation of {@link List} interface. This resizable data structure
@@ -55,7 +56,9 @@ public class ArrayList<T> implements List<T> {
      * @return new instance
      */
     public static <T> List<T> of(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        ArrayList<T> list = new ArrayList<>();
+        Stream.of(elements).forEach(list::add);
+        return list;
     }
 
     /**
@@ -65,21 +68,22 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void add(T element) {
-        ResizeIfNecessary();
+        ResizeIfNecessary(size);
         table[size] = element;
         size++;
     }
 
-    private void ResizeIfNecessary() {
+    private void ResizeIfNecessary(int splitIndex) {
         if (size > capacity / 2) {
-            ExtendArray();
+            ExtendArray(splitIndex);
         }
     }
 
-    private void ExtendArray() {
+    private void ExtendArray(int splitIndex) {
         capacity = capacity + (capacity >> 1);
-        T[] newTable = (T[]) new Object[]{capacity};
-        System.arraycopy(table, 0, newTable, 0, size);
+        T[] newTable = (T[]) new Object[capacity];
+        System.arraycopy(table, 0, newTable, 0, splitIndex);
+        System.arraycopy(table, splitIndex - 1, newTable, splitIndex, size - splitIndex);
         table = newTable;
     }
 
@@ -91,7 +95,14 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void add(int index, T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        ResizeIfNecessary(index);
+        table[index] = element;
+        size++;
     }
 
     /**
@@ -104,7 +115,11 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T get(int index) {
 
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        return table[index];
     }
 
     /**
@@ -163,8 +178,19 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T remove(int index) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        T result = table[index];
+        if (index < size - 1) {
+            System.arraycopy(table, index + 1, table, index, size - index - 1);
+        }
+        table[size - 1] = null;
+        size--;
+        return result;
     }
+
 
     /**
      * Checks for existing of a specific element in the list.
@@ -174,7 +200,12 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public boolean contains(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        for (int i = 0; i < table.length; i++) {
+            if (element.equals(table[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

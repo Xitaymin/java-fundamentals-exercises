@@ -155,7 +155,7 @@ class ArrayListTest {
     @Test
     @Order(14)
     void addElementByIndex() {
-        fillTestArray(15, 69, 58, 78, 68);
+        fillTestArray(15, 69, 58, 78, 68); //todo yb 
 
         arrayList.add(50);
         arrayList.add(2, 10);
