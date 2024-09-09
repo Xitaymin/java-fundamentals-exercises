@@ -2,6 +2,8 @@ package com.bobocode.cs;
 
 import com.bobocode.util.ExerciseNotCompletedException;
 
+import java.util.Objects;
+
 /**
  * {@link HashTable} is a simple Hashtable-based implementation of {@link Map} interface with some additional methods.
  * It is based on the array of {@link Node} objects. Both {@link HashTable} and {@link Node} have two type parameters:
@@ -28,6 +30,24 @@ import com.bobocode.util.ExerciseNotCompletedException;
  */
 public class HashTable<K, V> implements Map<K, V> {
 
+    private int size;
+
+    static class Node<K, V> {
+        K key;
+        V value;
+
+        Node<K, V> next;
+
+        public Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private final int capacity = 16;
+
+    private Node<K, V>[] table = new Node[capacity];
+
     /**
      * This method is a critical part of the hast table. The main idea is that having a key, you can calculate its index
      * in the array using the hash code. Since the computation is done in constant time (O(1)), it's faster than
@@ -43,7 +63,7 @@ public class HashTable<K, V> implements Map<K, V> {
      * @return array index of the given key
      */
     public static int calculateIndex(Object key, int tableCapacity) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return key.hashCode() / tableCapacity;
     }
 
     /**
@@ -59,7 +79,20 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Objects.requireNonNull(key);
+
+        V oldValue = get(key);
+
+        int index = calculateIndex(key, capacity);
+
+        Node<K, V> node = table[index];
+        Node<K, V> newNode = new Node<>(key, value);
+        if (node == null) table[index] = newNode;
+        else node.next = newNode;
+
+        size++;
+
+        return oldValue;
     }
 
     /**
@@ -103,7 +136,7 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo:
+        return size;
     }
 
     /**
