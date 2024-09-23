@@ -4,6 +4,8 @@ import com.bobocode.util.ExerciseNotCompletedException;
 
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 /**
  * {@link HashTable} is a simple Hashtable-based implementation of {@link Map} interface with some additional methods.
  * It is based on the array of {@link Node} objects. Both {@link HashTable} and {@link Node} have two type parameters:
@@ -32,6 +34,19 @@ public class HashTable<K, V> implements Map<K, V> {
 
     private int size;
 
+    public HashTable() {
+        capacity = 8;
+        table = new Node[capacity];
+    }
+
+    public HashTable(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Hashtable capacity should be greater than 0");
+        }
+        this.capacity = capacity;
+        table = new Node[capacity];
+    }
+
     static class Node<K, V> {
         K key;
         V value;
@@ -44,9 +59,9 @@ public class HashTable<K, V> implements Map<K, V> {
         }
     }
 
-    private final int capacity = 16;
+    private int capacity;
 
-    private Node<K, V>[] table = new Node[capacity];
+    private Node<K, V>[] table;
 
     /**
      * This method is a critical part of the hast table. The main idea is that having a key, you can calculate its index
@@ -63,7 +78,7 @@ public class HashTable<K, V> implements Map<K, V> {
      * @return array index of the given key
      */
     public static int calculateIndex(Object key, int tableCapacity) {
-        return key.hashCode() / tableCapacity;
+        return abs(key.hashCode()) % tableCapacity;
     }
 
     /**
@@ -104,7 +119,15 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new ExerciseNotCompletedException(); // todo:
+        int index = calculateIndex(key, capacity);
+
+        Node<K, V> node = table[index];
+
+        while (node != null && !node.value.equals(key)  ) {
+            node = node.next;
+        }
+
+        return node != null ? node.value : null;
     }
 
     /**
